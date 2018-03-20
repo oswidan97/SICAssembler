@@ -9,22 +9,19 @@ import java.util.*;
  */
 public class AssemblerPass1 {
 
-    private List<String> sourceFile;
-    private Map<String, String> opTable;
-    private int LOCCR;
-    private String startAdd="";
+    private Outcomes outcomes;
 
+    public AssemblerPass1(Outcomes outcomes) {
+        this.outcomes = outcomes;
+    }
 
     public void pass() throws IOException {
 
-        sourceFile = readSource();
-        opTable=readOpTable();
-        LineAnalyser analyser= new LineAnalyser(sourceFile,opTable);
-       // System.out.println(Integer.parseInt("0C"));
-        List<String> interFile= analyser.analyse();
+        outcomes.setSourceFile(readSource());
+        outcomes.setOpTable(readOpTable());
+        new LineAnalyser(outcomes).analyse();
 
-
-        new InterFileWriter(interFile).write();
+        new InterFileWriter(outcomes.getInterFile()).write();
     }
 
     public List<String> readSource() throws IOException {
@@ -52,7 +49,7 @@ public class AssemblerPass1 {
 
     public static void main(String[] args) {
         try {
-            new AssemblerPass1().pass();
+            new AssemblerPass1(new Outcomes()).pass();
 
         } catch (IOException e) {
             e.printStackTrace();

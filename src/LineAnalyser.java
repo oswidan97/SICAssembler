@@ -5,75 +5,68 @@ import java.util.*;
  */
 public class LineAnalyser {
 
-    private List<String> sourceFile;
-    private List<String> interFile=new ArrayList<>();
-    private Map<String,String> symbTable=new HashMap<>();
-    private Map<String,String> opTable;
-    private int LOCCR;
-    private String startAdd="";
-    private boolean errorFlag=false;
+    private Outcomes outcomes;
+   private boolean errorFlag=false;
 
-    public Map<String, String> getSymbTable() {
-        return symbTable;
+    public LineAnalyser(Outcomes outcomes) {
+         this.outcomes=outcomes;
     }
 
-    public LineAnalyser(List<String> sourceFile, Map<String, String> opTable) {
-        this.sourceFile = sourceFile;
-        this.opTable = opTable;
-    }
+    public void analyse(){
 
-    public List<String> analyse(){
-
-        String[] s=sourceFile.get(0).split("\\s");
+        String[] s=outcomes.getSourceFile().get(0).split("\\s");
         analyseFirstLine(s);
 
         analyseLines();
-        return interFile;
+
 
     }
+
     public void analyseFirstLine(String[] s){
 
         if (s[1].compareToIgnoreCase("start") == 0) {
-            startAdd = s[2];
-            LOCCR = Integer.parseInt(s[2],16);
+            outcomes.setStartAdd( s[2]);
 
-            addToInterList(LOCCR,s);
+           outcomes.setLOCCR( Integer.parseInt(s[2],16));
 
-        } else LOCCR = 0;
+            addToInterList(outcomes.getLOCCR(),s);
+
+        } else outcomes.setLOCCR(0);
 
     }
     public void analyseLines(){
 
         int i=1;
-        String[] s=sourceFile.get(i).split("\\s");
+        String[] s=outcomes.getSourceFile().get(i).split("\\s");
 
         while (s[0].compareTo("END")!=0){
 
-           s= sourceFile.get(i).split("\\s");
 
-            if (checkComment(sourceFile.get(i)))
+            if (checkComment(outcomes.getSourceFile().get(i)))
             {
                 i++;
                 continue;
             }
 
-           if (s.length==3)if (symbTable.get(s[0]) == null) {
-                symbTable.put(s[0], Integer.toHexString(LOCCR));
+           if (s.length==3)if (outcomes.getSymbTable().get(s[0]) == null) {
+                outcomes.getSymbTable().put(s[0], Integer.toHexString(outcomes.getLOCCR()));
             }else {
-                    System.out.println("duplicate symbol at "+LOCCR);
+                    System.out.println("duplicate symbol at "+outcomes.getLOCCR());
                     errorFlag=true;
                     i++;
                     continue;
             }
-            addToInterList(this.LOCCR,s);
+            addToInterList(outcomes.getLOCCR(),s);
             dealWithOpCode(s);
             i++;
+            s= outcomes.getSourceFile().get(i).split("\\s");
         }
+        addToInterList(-1,s);
 
-        Set<String> set= symbTable.keySet();
+        Set<String> set= outcomes.getSymbTable().keySet();
         for (String t :
                 set) {
-            System.out.println(t+" "+symbTable.get(t));
+            System.out.println(t+" "+outcomes.getSymbTable().get(t));
         }
 
 
@@ -81,8 +74,8 @@ public class LineAnalyser {
     public boolean checkComment(String s){
 
         if(s.startsWith(".")) {
-            interFile.addAll(Arrays.asList(s));
-            interFile.add("\n");
+            outcomes.getInterFile().addAll(Arrays.asList(s));
+            outcomes.getInterFile().add("\n");
             return true;
         }
         return false;
@@ -93,8 +86,9 @@ public class LineAnalyser {
         String operand=s.length==3?s[2]:s[1];
 
 
-        if (opTable.get(opCode)!=null||opCode.compareTo("WORD")==0) {
-            LOCCR += 3;
+        int LOCCR=outcomes.getLOCCR();
+        if (outcomes.getOpTable().get(opCode)!=null||opCode.compareTo("WORD")==0) {
+            LOCCR+= 3;
 
         } else if (opCode.compareTo("RESW")==0) {
             LOCCR += 3 * Integer.parseInt(operand,16);
@@ -103,18 +97,22 @@ public class LineAnalyser {
 
         } else if (opCode.compareTo("BYTE")==0) {
             LOCCR += operand.length();
-        } else
+        } else{
             errorFlag=true;
+            System.out.println(opCode+" "+operand);
+            System.out.println("invalid opcode");
+        }
+        outcomes.setLOCCR(LOCCR);
 
     }
     public void addToInterList(int LOCCR,String []s){
         StringBuilder sb=new StringBuilder();
-        sb.append(Integer.toHexString(LOCCR));
+        if (LOCCR!=-1)sb.append(Integer.toHexString(LOCCR));
 
         for (String t: s)
             sb.append(" ").append(t);
         sb.append("\n");
-        interFile.add(sb.toString());
+       outcomes.getInterFile().add(sb.toString());
 
     }
 }
