@@ -14,6 +14,9 @@ public class Outcomes {
     private String startAdd="";
     private List<String> interFile=new ArrayList<>();
     private Map<String,String> symbTable=new HashMap<>();
+    private List<String> objectProg;
+
+
 
     public Map<String, String> getOpTable() {
         return opTable;
@@ -66,6 +69,14 @@ public class Outcomes {
 
     public Outcomes setSymbTable(Map<String, String> symbTable) {
         this.symbTable = symbTable;
+        return this;
+    }
+    public List<String> getObjectProg() {
+        return objectProg;
+    }
+
+    public Outcomes setObjectProg(List<String> objectProg) {
+        this.objectProg = objectProg;
         return this;
     }
 }

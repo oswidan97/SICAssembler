@@ -110,7 +110,9 @@ public class LineAnalyser {
         if (LOCCR!=-1)sb.append(Integer.toHexString(LOCCR));
 
         for (String t: s)
-            sb.append(" ").append(t);
+            if (LOCCR!=-1)
+                sb.append(" ").append(t);
+             else sb.append(t).append(" ");
         sb.append("\n");
        outcomes.getInterFile().add(sb.toString());
 

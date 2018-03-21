@@ -1,9 +1,4 @@
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by omar_swidan on 20/03/18.
@@ -11,15 +6,15 @@ import java.util.Map;
 public class AssemblerPass2 {
 
 
-  private Outcomes outcomes;
+    private Outcomes outcomes;
 
     public AssemblerPass2(Outcomes outcomes) {
         this.outcomes = outcomes;
     }
 
-    public void pass () throws IOException {
+    public void pass() throws IOException {
 
-
+        new LineAnalyser2(outcomes).analyse();
 
     }
 
