@@ -21,8 +21,11 @@ public class AssemblerPass1 {
         outcomes.setOpTable(readOpTable());
         new LineAnalyser(outcomes).analyse();
 
+
         new InterFileWriter(outcomes.getInterFile()).write();
+        new AssemblerPass2(outcomes).pass();
     }
+
 
     public List<String> readSource() throws IOException {
 
@@ -50,6 +53,7 @@ public class AssemblerPass1 {
     public static void main(String[] args) {
         try {
             new AssemblerPass1(new Outcomes()).pass();
+
 
         } catch (IOException e) {
             e.printStackTrace();

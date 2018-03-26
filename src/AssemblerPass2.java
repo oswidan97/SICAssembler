@@ -18,7 +18,5 @@ public class AssemblerPass2 {
 
     }
 
-    public static void main(String[] args) {
 
-    }
 }

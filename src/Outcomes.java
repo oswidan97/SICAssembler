@@ -15,8 +15,21 @@ public class Outcomes {
     private List<String> interFile=new ArrayList<>();
     private Map<String,String> symbTable=new HashMap<>();
     private List<String> objectProg;
+    private List<Text> texts=new ArrayList<>();
+    private int textIndex;
 
+    public Outcomes() {
+        textIndex=-1;
+    }
+    public Text getText(){
+        textIndex++;
+        texts.add(textIndex,new Text());
+        return texts.get(textIndex);
+    }
 
+    public int getTextIndex() {
+        return textIndex;
+    }
 
     public Map<String, String> getOpTable() {
         return opTable;

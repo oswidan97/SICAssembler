@@ -1,3 +1,5 @@
+import com.sun.xml.internal.bind.v2.TODO;
+
 import java.util.*;
 
 /**
@@ -106,6 +108,7 @@ public class LineAnalyser {
 
     }
     public void addToInterList(int LOCCR,String []s){
+        // TODO: 24/03/18 End has a space before it, remove it
         StringBuilder sb=new StringBuilder();
         if (LOCCR!=-1)sb.append(Integer.toHexString(LOCCR));
 
