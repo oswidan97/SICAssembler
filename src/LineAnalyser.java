@@ -1,6 +1,5 @@
-import com.sun.xml.internal.bind.v2.TODO;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.Set;
 
 /**
  * Created by omar_swidan on 19/03/18.
@@ -14,9 +13,9 @@ public class LineAnalyser {
          this.outcomes=outcomes;
     }
 
-    public void analyse(){
+    public void analyse() throws Exception {
 
-        String[] s=outcomes.getSourceFile().get(0).split("\\s");
+        String[] s=outcomes.getSourceFile().get(0).trim().split("\\s+");
         analyseFirstLine(s);
 
         analyseLines();
@@ -36,57 +35,64 @@ public class LineAnalyser {
         } else outcomes.setLOCCR(0);
 
     }
-    public void analyseLines(){
+    public void analyseLines() throws Exception {
 
         int i=1;
-        String[] s=outcomes.getSourceFile().get(i).split("\\s");
+        String[] s=outcomes.getSourceFile().get(i).trim().split("\\s+");
 
         while (s[0].compareTo("END")!=0){
 
-
-            if (checkComment(outcomes.getSourceFile().get(i)))
+            if (checkComment(s[0]))
             {
+
+               // addToInterList(-1,s);
                 i++;
+                s= outcomes.getSourceFile().get(i).trim().split("\\s+");
                 continue;
             }
 
            if (s.length==3)if (outcomes.getSymbTable().get(s[0]) == null) {
                 outcomes.getSymbTable().put(s[0], Integer.toHexString(outcomes.getLOCCR()));
             }else {
-                    System.out.println("duplicate symbol at "+outcomes.getLOCCR());
-                    errorFlag=true;
-                    i++;
-                    continue;
+
+               System.out.println();
+                throw new Exception("duplicate symbol "+s[0]+" "+outcomes.getSymbTable().get(s[0]));
             }
             addToInterList(outcomes.getLOCCR(),s);
             dealWithOpCode(s);
             i++;
-            s= outcomes.getSourceFile().get(i).split("\\s");
+            s= outcomes.getSourceFile().get(i).trim().split("\\s+");
+
         }
+
+
+        outcomes.setEndAdd(Integer.toHexString(outcomes.getLOCCR()));
         addToInterList(-1,s);
 
-        Set<String> set= outcomes.getSymbTable().keySet();
-        for (String t :
-                set) {
-            System.out.println(t+" "+outcomes.getSymbTable().get(t));
-        }
+
 
 
     }
     public boolean checkComment(String s){
 
-        if(s.startsWith(".")) {
-            outcomes.getInterFile().addAll(Arrays.asList(s));
-            outcomes.getInterFile().add("\n");
+        if(s.equals(".")) {
+
             return true;
         }
         return false;
     }
-    public void dealWithOpCode(String[] s){
+    public void dealWithOpCode(String[] s) throws Exception {
 
-        String opCode=s.length==3?s[1]:s[0];
-        String operand=s.length==3?s[2]:s[1];
-
+        String opCode="";
+        String operand="";
+        if (s.length!=1) {
+            opCode= s.length == 3 ? s[1] : s[0];
+            operand = s.length == 3 ? s[2] : s[1];
+        }
+        else {
+            opCode="RSUB";
+            operand="0";
+        }
 
         int LOCCR=outcomes.getLOCCR();
         if (outcomes.getOpTable().get(opCode)!=null||opCode.compareTo("WORD")==0) {
@@ -101,8 +107,8 @@ public class LineAnalyser {
             LOCCR += operand.length();
         } else{
             errorFlag=true;
-            System.out.println(opCode+" "+operand);
-            System.out.println("invalid opcode");
+
+           throw new Exception("invalid opcode = "+opCode);
         }
         outcomes.setLOCCR(LOCCR);
 

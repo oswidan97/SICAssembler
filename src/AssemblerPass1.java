@@ -15,14 +15,14 @@ public class AssemblerPass1 {
         this.outcomes = outcomes;
     }
 
-    public void pass() throws IOException {
+    public void pass() throws Exception {
 
         outcomes.setSourceFile(readSource());
         outcomes.setOpTable(readOpTable());
         new LineAnalyser(outcomes).analyse();
 
 
-        new InterFileWriter(outcomes.getInterFile()).write();
+        new AssemblyFileWriter(outcomes.getInterFile(),"InterFile").write();
         new AssemblerPass2(outcomes).pass();
     }
 
@@ -56,6 +56,8 @@ public class AssemblerPass1 {
 
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

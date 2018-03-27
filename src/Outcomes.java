@@ -17,6 +17,16 @@ public class Outcomes {
     private List<String> objectProg;
     private List<Text> texts=new ArrayList<>();
     private int textIndex;
+    private String endAdd="";
+
+    public String getEndAdd() {
+        return endAdd;
+    }
+
+    public Outcomes setEndAdd(String endAdd) {
+        this.endAdd = endAdd;
+        return this;
+    }
 
     public Outcomes() {
         textIndex=-1;

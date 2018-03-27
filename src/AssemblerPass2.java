@@ -12,7 +12,7 @@ public class AssemblerPass2 {
         this.outcomes = outcomes;
     }
 
-    public void pass() throws IOException {
+    public void pass() throws Exception {
 
         new LineAnalyser2(outcomes).analyse();
 

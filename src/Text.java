@@ -3,8 +3,10 @@
  */
 public class Text {
     private String startAdd;
-    private String length;
-    private String[] instructions;
+    private String length="";
+    private String[] instructions=new String[10];
+    private int instCount=0;
+
 
     public String getStartAdd() {
         return startAdd;
@@ -28,8 +30,10 @@ public class Text {
         return instructions;
     }
 
-    public Text setInstructions(String[] instructions) {
-        this.instructions = instructions;
+    public Text setInstruction(String instruction) {
+        this.instructions[instCount] = instruction;
+        instCount++;
         return this;
     }
+
 }
