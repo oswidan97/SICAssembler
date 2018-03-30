@@ -24,6 +24,10 @@ public class AssemblerPass1 {
 
         new AssemblyFileWriter(outcomes.getInterFile(),"InterFile").write();
         new AssemblerPass2(outcomes).pass();
+        for (String s :
+                outcomes.getSymbTable().keySet()) {
+            System.out.println(s+" "+outcomes.getSymbTable().get(s));
+        }
     }
 
 

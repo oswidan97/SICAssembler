@@ -26,9 +26,10 @@ public class LineAnalyser2 {
         i++;
         String opCode="", operand="";
         s = outcomes.getInterFile().get(i).split("\\s");
-
+        int x;
 
         while (s[0].compareTo("END") != 0) {
+            x=0;
             if (s[0].startsWith(".")) {
                 i++;
                 continue;
@@ -40,9 +41,10 @@ public class LineAnalyser2 {
                 opCode="RSUB";
                 operand="0";
             }
-            if(operand.matches("\\w+\\,X"))
-                operand=operand.substring(0,operand.length()-2);
-
+            if(operand.matches("\\w+\\,X")) {
+                operand = operand.substring(0, operand.length() - 2);
+                x=1;
+            }
             if (instructionsCount == 10) {
 
                 text.setLength("1e");
@@ -62,39 +64,47 @@ public class LineAnalyser2 {
                 instructionsCount = 0;
             }
             else if (opCode.compareTo("RESB") == 0&& instructionsCount!=0){
+                text.setLength(Integer.toHexString(3*instructionsCount));
+                la.writeText(text, objectProg,instructionsCount);
                 instructionsCount = 0;
 
             }
 
            else if (outcomes.getOpTable().get(opCode) != null) {
+
+
                 operand = dealWithOperand(operand);
                 la.assembleObjectCodeInst(text,
-                        outcomes.getOpTable().get(opCode), operand,
-                        operand.matches("\\w+,X") ? 1 : 0);
+                        outcomes.getOpTable().get(opCode), operand, x);
                 instructionsCount++;
             } else if (opCode.compareTo("WORD") == 0) {
 
                 opCode = "00";
                 la.assembleObjectCodeInst(text, opCode,
-                        Integer.toHexString(Integer.parseInt(operand)), 0);
+                        Integer.toHexString(Integer.parseInt(operand,16)), 0);
                 instructionsCount++;
 
             } else if (opCode.compareTo("BYTE") == 0) {
+                opCode="00";
                 if (operand.startsWith("C")) {
                     if ((10 - instructionsCount < Math.ceil(operand.length() / 3))) {
+                        text.setLength(Integer.toHexString(3 * instructionsCount));
+                        la.writeText(text, objectProg,instructionsCount);
                         instructionsCount = 0;
                         i--;
                     }
                     else {
+
                         la.assembleObjectCodeInst(text,
-                                operand.substring(2, operand.length() - 2));
+                                operand.substring(2, operand.length() - 1));
+
                         instructionsCount++;
                     }
                 }
-               else if (opCode.startsWith("X")) {
+               else if (operand.startsWith("X")) {
                     opCode = "00";
 
-                    operand = operand.substring(2, operand.length() - 2);
+                    operand = operand.substring(2, operand.length() - 1);
                     la.assembleObjectCodeInst(text, opCode, operand, 0);
                     instructionsCount++;
                 }

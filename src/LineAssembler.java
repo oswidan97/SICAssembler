@@ -10,6 +10,7 @@ public class LineAssembler {
         int start=Integer.parseInt(startAdd,16);
 
 
+
         sb.append("H").append(" ").append(s).append(" ").
                 append(String.format("%06X",start)).
                 append(" ").append(String.format("%06X",(endAdd-
@@ -30,14 +31,14 @@ public class LineAssembler {
     public void assembleObjectCodeInst(Text text, String opCode, String operand, int x){
 
             StringBuilder sb=new StringBuilder();
-
             sb.append(opCode);
             if(x==0)
-                sb.append(operand);
+                sb.append(String.format("%04X",Integer.parseInt(operand,16)));
             else
             {
-                operand= String.valueOf(Integer.parseInt(operand)|32762);
-                sb.append(operand);
+                operand= Integer.toHexString(Integer.parseInt(operand,16)|32768);
+                sb.append(String.format("%04X",Integer.parseInt(operand,16)));
+
             }
             text.setInstruction(sb.toString());
 
@@ -61,18 +62,17 @@ public class LineAssembler {
         StringBuilder stringBuilder=new StringBuilder();
         stringBuilder.append("T").append(" ").append(String.format("%06X",
                 Integer.parseInt(text.getStartAdd(),16)))
-                .append(" ").append(String.format("%06X",
+                .append(" ").append(String.format("%02X",
                 Integer.parseInt(text.getLength(),16)))
                 .append(" ");
 
 
-        for (int i = 0; i < instructionCount; i++)
+        for (int i = 0; i < instructionCount; i++) {
             stringBuilder.append(String.format("%06X",
-                    Integer.parseInt(text.getInstructions()[i],16))).append(" ");
+                    Integer.parseInt(text.getInstructions()[i], 16))).append(" ");
+        }
         stringBuilder.append("\n");
         objectProg.add(stringBuilder.toString());
-
-
 
     }
 }

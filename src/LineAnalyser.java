@@ -66,7 +66,7 @@ public class LineAnalyser {
         }
 
 
-        outcomes.setEndAdd(Integer.toHexString(outcomes.getLOCCR()));
+        outcomes.setEndAdd(Integer.toHexString(outcomes.getLOCCR()-1));
         addToInterList(-1,s);
 
 
@@ -85,6 +85,7 @@ public class LineAnalyser {
 
         String opCode="";
         String operand="";
+
         if (s.length!=1) {
             opCode= s.length == 3 ? s[1] : s[0];
             operand = s.length == 3 ? s[2] : s[1];
@@ -99,12 +100,12 @@ public class LineAnalyser {
             LOCCR+= 3;
 
         } else if (opCode.compareTo("RESW")==0) {
-            LOCCR += 3 * Integer.parseInt(operand,16);
+            LOCCR += 3 * Integer.parseInt(operand);
         } else if(opCode.compareTo("RESB")==0) {
-            LOCCR += Integer.parseInt(operand,16);
+            LOCCR += Integer.parseInt(operand);
 
         } else if (opCode.compareTo("BYTE")==0) {
-            LOCCR += operand.length();
+            LOCCR += operand.length()/2;
         } else{
             errorFlag=true;
 
